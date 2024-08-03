@@ -1,23 +1,38 @@
 #!/usr/bin/python3
-"""
-  LockBoxes
-"""
-
-
 def canUnlockAll(boxes):
     """
-        A method that determines if all the boxes can be opened.
-        Return True if all boxes can be opened, else return False
+    Determine if all boxes can be unlocked.
+
+    Parameters:
+    boxes (list of lists): List of lists where each sublist contains keys for other boxes.
+
+    Returns:
+    bool: True if all boxes can be opened, else False.
     """
-    # first: what is in the box?
-    opened_boxes = [0]
-    for idx in opened_boxes:
-        for box in boxes[idx]:
-            if box < len(boxes):
-                if box not in opened_boxes:
-                    opened_boxes.append(box)
-    # check the length of the opened boxes and all the boxes.
-    if len(boxes) == len(opened_boxes):
-        return True
-    else:
+    if not boxes:
         return False
+    
+    n = len(boxes)
+    unlocked = set([0])  # Start with the first box unlocked
+    stack = [0]  # Use a stack for DFS
+
+    while stack:
+        current_box = stack.pop()
+        for key in boxes[current_box]:
+            if key not in unlocked and key < n:
+                unlocked.add(key)
+                stack.append(key)
+
+    return len(unlocked) == n
+
+if __name__ == "__main__":
+    # Test cases
+    boxes = [[1], [2], [3], [4], []]
+    print(canUnlockAll(boxes))  # Expected output: True
+
+    boxes = [[1, 4, 6], [2], [0, 4, 1], [5, 6, 2], [3], [4, 1], [6]]
+    print(canUnlockAll(boxes))  # Expected output: True
+
+    boxes = [[1, 4], [2], [0, 4, 1], [3], [], [4, 1], [5, 6]]
+    print(canUnlockAll(boxes))  # Expected output: False
+
